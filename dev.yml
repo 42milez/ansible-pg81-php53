@@ -1,0 +1,10 @@
+---
+- name: Configurations for Dev. environment
+  hosts: dev
+  remote_user: vagrant
+  roles:
+    - env
+    - apache
+    - postgresql81
+    - php53
+  sudo: yes

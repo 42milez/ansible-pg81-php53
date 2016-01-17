@@ -1,0 +1,14 @@
+---
+# Apache
+doc_root:    /var/www/html/htdocs
+httpd_group: vagrant
+httpd_user:  vagrant
+
+# PostgreSQL
+permit_network: 192.168.33.0/24
+
+# Application
+cake_env_mode: development
+cake_db_name:  dev_db
+cake_db_user:  cakephp
+cake_db_pw:    cakephp

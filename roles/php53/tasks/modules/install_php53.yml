@@ -1,0 +1,43 @@
+---
+- name: Add EPEL GPG Key
+  rpm_key: key=http://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-5 state=present
+
+- name: Add EPEL repository
+  yum: name="http://dl.fedoraproject.org/pub/epel/5/x86_64/epel-release-5-4.noarch.rpm" state=present
+
+- name: Install PHP 5.3
+  yum: name={{ item }} state=present
+  with_items:
+    - php53
+    - php53-devel
+    - php53-gd
+    - php53-intl
+    - php53-mbstring
+    - php53-mcrypt
+    - php53-pdo
+    - php53-pgsql
+    - php53-xml
+    - php-pear
+
+- name: Update PEAR channel
+  command: sudo pear channel-update pear.php.net
+
+- name: Update PECL channel
+  command: sudo pecl channel-update pecl.php.net
+
+- name: Upgrade dependencies
+  command: sudo pear upgrade --force {{ item }}
+  with_items:
+    - Archive_Tar
+    - Console_Getopt
+    - PEAR
+    - XML_RPC
+
+- name: Install Xdebug 2.2.7
+  command: sudo pecl install xdebug-2.2.7
+
+- name: Replace php.ini
+  template: src=../../templates/php.ini.j2 dest=/etc/php.ini
+
+- name: Replace xdebug.ini
+  template: src=../../templates/xdebug.ini.j2 dest=/etc/php.d/xdebug.ini

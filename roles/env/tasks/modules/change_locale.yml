@@ -1,0 +1,6 @@
+---
+- name: Change locale
+  template: src=../../templates/i18n.j2 dest=/etc/sysconfig/i18n
+
+- name: Source locale file
+  shell: source /etc/sysconfig/i18n

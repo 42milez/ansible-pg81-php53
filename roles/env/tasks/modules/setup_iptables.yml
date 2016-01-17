@@ -1,0 +1,3 @@
+---
+- name: Setup iptables
+  script: ../../files/setup_iptables.sh

@@ -1,0 +1,9 @@
+---
+- include: modules/disable_selinux.yml
+- include: modules/change_locale.yml
+- include: modules/change_timezone.yml
+- include: modules/upgrade_all_packages.yml
+- include: modules/install_yum-cron.yml
+- include: modules/install_devtools.yml
+- include: modules/install_ntp.yml
+- include: modules/setup_iptables.yml

@@ -1,0 +1,6 @@
+---
+- name: Change timezone to Japan
+  shell: \cp -f /usr/share/zoneinfo/Japan /etc/localtime
+
+- name: Replace clock
+  template: src=../../templates/clock.j2 dest=/etc/sysconfig/clock

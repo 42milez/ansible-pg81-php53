@@ -1,0 +1,51 @@
+---
+- name: Install PostgreSQL 8.1.23
+  yum: name={{ item }} state=present
+  with_items:
+    # - http://yum.postgresql.org/8.1/redhat/rhel-5-x86_64/postgresql-libs-8.1.23-1PGDG.rhel5.x86_64.rpm
+    # - http://yum.postgresql.org/8.1/redhat/rhel-5-x86_64/postgresql-8.1.23-1PGDG.rhel5.x86_64.rpm
+    # - http://yum.postgresql.org/8.1/redhat/rhel-5-x86_64/postgresql-server-8.1.23-1PGDG.rhel5.x86_64.rpm
+    # - http://yum.postgresql.org/8.1/redhat/rhel-5-x86_64/postgresql-contrib-8.1.23-1PGDG.rhel5.x86_64.rpm
+    - postgresql
+    - postgresql-contrib
+    - postgresql-server
+    - postgresql-libs
+
+- name: Ensure postgresql 8.1 starts on boot
+  service: name=postgresql enabled=yes
+
+- name: Ensure postgresql.conf has created
+  command: test -f "/var/lib/pgsql/data/postgresql.conf"
+  register: is_initialized
+  ignore_errors: true
+
+- name: Initialize database
+  command: su postgres -c "/usr/bin/initdb --no-locale --encoding=UTF8 -D /var/lib/pgsql/data"
+  when: is_initialized|failed
+
+- name: Replace pg_hba.conf
+  template: src=../templates/pg_hba.conf.j2 dest=/var/lib/pgsql/data/pg_hba.conf
+  when: is_initialized|failed
+
+- name: Replace postgresql.conf
+  template: src=../templates/postgresql.conf.j2 dest=/var/lib/pgsql/data/postgresql.conf
+  when: is_initialized|failed
+
+- name: Start postgresql
+  service: name=postgresql state=started
+
+- name: Config postgres password
+  command: sudo -u postgres /usr/bin/psql -c "ALTER USER postgres with unencrypted password 'postgres';"
+  when: is_initialized|failed
+
+- name: Create a database
+  command: sudo -u postgres /usr/bin/psql -U postgres -c "CREATE DATABASE {{ cake_db_name }} ENCODING 'UTF8'"
+  when: is_initialized|failed
+
+- name: Create a user
+  command: sudo -u postgres /usr/bin/psql -U postgres -c "CREATE USER {{ cake_db_user }} WITH PASSWORD '{{ cake_db_pw }}'"
+  when: is_initialized|failed
+
+- name: Grant access to database
+  command: sudo -u postgres /usr/bin/psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE {{ cake_db_name }} to {{ cake_db_user }};"
+  when: is_initialized|failed

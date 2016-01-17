@@ -1,0 +1,28 @@
+---
+- name: Install httpd
+  yum: name={{ item }} state=present
+  with_items:
+    - httpd
+    - httpd-devel
+    - mod_ssl
+
+- name: Create virtualhosts.conf
+  template: src=virtualhosts.conf.j2 dest=/etc/httpd/conf.d/virtualhosts.conf owner=root group=root
+
+- name: Replace httpd.conf
+  template: src=httpd.conf.j2 dest=/etc/httpd/conf/httpd.conf owner=root group=root
+
+- name: Delete welcome.conf
+  file: path=/etc/httpd/conf.d/welcome.conf state=absent
+
+- name: Delete noindex.html
+  file: path=/var/www/error/noindex.html state=absent
+
+- name: Conceal hidden files
+  copy: src=hide_files.conf dest=/etc/httpd/conf.d/hide_files.conf
+
+- name: Enable httpd
+  service: name=httpd enabled=yes
+
+- name: Start httpd
+  service: name=httpd state=started
