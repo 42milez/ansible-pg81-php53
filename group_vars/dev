@@ -7,7 +7,7 @@ httpd_user:  vagrant
 # PostgreSQL
 permit_network: 192.168.33.0/24
 
-# Application
+# CakePHP
 cake_env_mode: development
 cake_db_name:  dev_db
 cake_db_user:  cakephp
