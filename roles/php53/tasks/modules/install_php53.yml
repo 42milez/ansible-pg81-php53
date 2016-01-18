@@ -1,6 +1,6 @@
 ---
 - name: Add EPEL GPG Key
-  rpm_key: key=http://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-5 state=present
+  rpm_key: key="http://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-5" state=present
 
 - name: Add EPEL repository
   yum: name="http://dl.fedoraproject.org/pub/epel/5/x86_64/epel-release-5-4.noarch.rpm" state=present
@@ -31,7 +31,6 @@
     - Archive_Tar
     - Console_Getopt
     - PEAR
-    - XML_RPC
 
 - name: Install Xdebug 2.2.7
   command: sudo pecl install xdebug-2.2.7
