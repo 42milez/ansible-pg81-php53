@@ -35,17 +35,17 @@
   service: name=postgresql state=started
 
 - name: Config postgres password
-  command: sudo -u postgres /usr/bin/psql -c "ALTER USER postgres with unencrypted password 'postgres';"
+  command: sudo -u postgres /usr/bin/psql -c "ALTER USER {{ db_user_id }} PASSWORD '{{ db_user_pw }}';"
   when: is_initialized|failed
 
 - name: Create a database
-  command: sudo -u postgres /usr/bin/psql -U postgres -c "CREATE DATABASE {{ cake_db_name }} ENCODING 'UTF8'"
+  command: sudo -u postgres /usr/bin/psql -c "CREATE DATABASE {{ cake_db_name }} ENCODING 'UTF8'"
   when: is_initialized|failed
 
 - name: Create a user
-  command: sudo -u postgres /usr/bin/psql -U postgres -c "CREATE USER {{ cake_db_user }} WITH PASSWORD '{{ cake_db_pw }}'"
+  command: sudo -u postgres /usr/bin/psql -c "CREATE USER {{ cake_db_user }} WITH PASSWORD '{{ cake_db_pw }}'"
   when: is_initialized|failed
 
 - name: Grant access to database
-  command: sudo -u postgres /usr/bin/psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE {{ cake_db_name }} to {{ cake_db_user }};"
+  command: sudo -u postgres /usr/bin/psql -c "GRANT ALL PRIVILEGES ON DATABASE {{ cake_db_name }} to {{ cake_db_user }};"
   when: is_initialized|failed
